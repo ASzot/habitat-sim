@@ -599,6 +599,9 @@ class Simulator {
    */
   bool contactTest(const int objectID, const int sceneID = 0);
 
+  std::vector<esp::physics::ContactPointData> getPhysicsContactPoints(
+      const int sceneID);
+
   /**
    * @brief Raycast into the collision world of a scene.
    *
