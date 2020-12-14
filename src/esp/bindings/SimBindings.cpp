@@ -152,112 +152,112 @@ void initSimBindings(py::module& m) {
               "scene_id"_a = 0,
               R"(Get the list of ids for all objects currently instanced in the scene.)")
 
-      /* --- Kinematics and dynamics --- */
-      .def(
-          "step_world", &Simulator::stepWorld, "dt"_a = 1.0 / 60.0,
-          R"(Step the physics simulation by a desired timestep (dt). Note that resulting world time after step may not be exactly t+dt. Use get_world_time to query current simulation time.)")
-      .def("get_world_time", &Simulator::getWorldTime,
-           R"(Query the current simualtion world time.)")
-      .def("get_gravity", &Simulator::getGravity, "scene_id"_a = 0,
-           R"(Query the gravity vector for a scene.)")
-      .def("set_gravity", &Simulator::setGravity, "gravity"_a, "scene_id"_a = 0,
-           R"(Set the gravity vector for a scene.)")
-      .def(
-          "get_object_scene_node", &Simulator::getObjectSceneNode,
-          "object_id"_a, "scene_id"_a = 0,
-          R"(Get a reference to the root SceneNode of an object's SceneGraph subtree.)")
-      .def(
-          "get_object_visual_scene_nodes",
-          &Simulator::getObjectVisualSceneNodes, "object_id"_a,
-          "scene_id"_a = 0,
-          R"(Get a list of references to the SceneNodes with an object's render assets attached. Use this to manipulate the visual state of an object. Changes to these nodes will not affect physics simulation.)")
-      .def(
-          "set_transformation", &Simulator::setTransformation, "transform"_a,
-          "object_id"_a, "scene_id"_a = 0,
-          R"(Set the transformation matrix of an object's root SceneNode and update its simulation state.)")
-      .def("get_transformation", &Simulator::getTransformation, "object_id"_a,
-           "scene_id"_a = 0,
-           R"(Get the transformation matrix of an object's root SceneNode.)")
-      .def(
-          "set_rigid_state", &Simulator::setRigidState, "rigid_state"_a,
-          "object_id"_a, "scene_id"_a = 0,
-          R"(Set the transformation of an object from a RigidState and update its simulation state.)")
-      .def(
-          "get_rigid_state", &Simulator::getRigidState, "object_id"_a,
-          "scene_id"_a = 0,
-          R"(Get an object's transformation as a RigidState (i.e. vector, quaternion).)")
-      .def("set_translation", &Simulator::setTranslation, "translation"_a,
-           "object_id"_a, "scene_id"_a = 0,
-           R"(Set an object's translation and update its simulation state.)")
-      .def("get_translation", &Simulator::getTranslation, "object_id"_a,
-           "scene_id"_a = 0, R"(Get an object's translation.)")
-      .def("set_rotation", &Simulator::setRotation, "rotation"_a, "object_id"_a,
-           "scene_id"_a = 0,
-           R"(Set an object's orientation and update its simulation state.)")
-      .def("get_rotation", &Simulator::getRotation, "object_id"_a,
-           "scene_id"_a = 0, R"(Get an object's orientation.)")
-      .def(
-          "get_object_velocity_control", &Simulator::getObjectVelocityControl,
-          "object_id"_a, "scene_id"_a = 0,
-          R"(Get a reference to an object's VelocityControl struct. Use this to set constant control velocities for MotionType::KINEMATIC and MotionType::DYNAMIC objects.)")
-      .def(
-          "set_linear_velocity", &Simulator::setLinearVelocity, "linVel"_a,
-          "object_id"_a, "scene_id"_a = 0,
-          R"(Set the linear component of an object's velocity. Only applies to MotionType::DYNAMIC objects.)")
-      .def(
-          "get_linear_velocity", &Simulator::getLinearVelocity, "object_id"_a,
-          "scene_id"_a = 0,
-          R"(Get the linear component of an object's velocity. Only non-zero for MotionType::DYNAMIC objects.)")
-      .def(
-          "set_angular_velocity", &Simulator::setAngularVelocity, "angVel"_a,
-          "object_id"_a, "scene_id"_a = 0,
-          R"(Set the angular component of an object's velocity. Only applies to MotionType::DYNAMIC objects.)")
-      .def(
-          "get_angular_velocity", &Simulator::getAngularVelocity, "object_id"_a,
-          "scene_id"_a = 0,
-          R"(Get the angular component of an object's velocity. Only non-zero for MotionType::DYNAMIC objects.)")
-      .def(
-          "apply_force", &Simulator::applyForce, "force"_a,
-          "relative_position"_a, "object_id"_a, "scene_id"_a = 0,
-          R"(Apply an external force to an object at a specific point relative to the object's center of mass in global coordinates. Only applies to MotionType::DYNAMIC objects.)")
-      .def(
-          "apply_torque", &Simulator::applyTorque, "torque"_a, "object_id"_a,
-          "scene_id"_a = 0,
-          R"(Apply torque to an object. Only applies to MotionType::DYNAMIC objects.)")
-      .def(
-          "contact_test", &Simulator::contactTest, "object_id"_a,
-          "scene_id"_a = 0,
-          R"(Run collision detection and return a binary indicator of penetration between the specified object and any other collision object. Physics must be enabled.)")
-      .def(
-          "get_physics_contact_points", &Simulator::getPhysicsContactPoints,
-          "scene_id"_a = 0,
-          R"(Return a list of ContactPointData objects describing the contacts from the most recent physics substep.)")
-      .def(
-          "cast_ray", &Simulator::castRay, "ray"_a, "max_distance"_a = 100.0,
-          "scene_id"_a = 0,
-          R"(Cast a ray into the collidable scene and return hit results. Physics must be enabled. max_distance in units of ray length.)")
-      .def("set_object_bb_draw", &Simulator::setObjectBBDraw, "draw_bb"_a,
-           "object_id"_a, "scene_id"_a = 0,
-           R"(Enable or disable bounding box visualization for an object.)")
-      .def(
-          "set_object_semantic_id", &Simulator::setObjectSemanticId,
-          "semantic_id"_a, "object_id"_a, "scene_id"_a = 0,
-          R"(Convenience function to set the semanticId for all visual SceneNodes belonging to an object.)")
-      .def(
-          "recompute_navmesh", &Simulator::recomputeNavMesh, "pathfinder"_a,
-          "navmesh_settings"_a, "include_static_objects"_a = false,
-          R"(Recompute the NavMesh for a given PathFinder instance using configured NavMeshSettings. Optionally include all MotionType::STATIC objects in the navigability constraints.)")
-      .def("get_light_setup", &Simulator::getLightSetup,
-           "key"_a = assets::ResourceManager::DEFAULT_LIGHTING_KEY,
-           R"(Get a copy of the LightSetup registered with a specific key.)")
-      .def(
-          "set_light_setup", &Simulator::setLightSetup, "light_setup"_a,
-          "key"_a = assets::ResourceManager::DEFAULT_LIGHTING_KEY,
-          R"(Register a LightSetup with a specific key. If a LightSetup is already registered with this key, it will be overriden. All Drawables referencing the key will use the newly registered LightSetup.)")
-      .def(
-          "set_object_light_setup", &Simulator::setObjectLightSetup,
-          "object_id"_a, "light_setup_key"_a, "scene_id"_a = 0,
-          R"(Modify the LightSetup used to the render all components of an object by setting the LightSetup key referenced by all Drawables attached to the object's visual SceneNodes.)")
+          /* --- Kinematics and dynamics --- */
+          .def(
+              "step_world", &Simulator::stepWorld, "dt"_a = 1.0 / 60.0,
+              R"(Step the physics simulation by a desired timestep (dt). Note that resulting world time after step may not be exactly t+dt. Use get_world_time to query current simulation time.)")
+          .def("get_world_time", &Simulator::getWorldTime,
+               R"(Query the current simualtion world time.)")
+          .def("get_gravity", &Simulator::getGravity, "scene_id"_a = 0,
+               R"(Query the gravity vector for a scene.)")
+          .def("set_gravity", &Simulator::setGravity, "gravity"_a, "scene_id"_a = 0,
+               R"(Set the gravity vector for a scene.)")
+          .def(
+              "get_object_scene_node", &Simulator::getObjectSceneNode,
+              "object_id"_a, "scene_id"_a = 0,
+              R"(Get a reference to the root SceneNode of an object's SceneGraph subtree.)")
+          .def(
+              "get_object_visual_scene_nodes",
+              &Simulator::getObjectVisualSceneNodes, "object_id"_a,
+              "scene_id"_a = 0,
+              R"(Get a list of references to the SceneNodes with an object's render assets attached. Use this to manipulate the visual state of an object. Changes to these nodes will not affect physics simulation.)")
+          .def(
+              "set_transformation", &Simulator::setTransformation, "transform"_a,
+              "object_id"_a, "scene_id"_a = 0,
+              R"(Set the transformation matrix of an object's root SceneNode and update its simulation state.)")
+          .def("get_transformation", &Simulator::getTransformation, "object_id"_a,
+               "scene_id"_a = 0,
+               R"(Get the transformation matrix of an object's root SceneNode.)")
+          .def(
+              "set_rigid_state", &Simulator::setRigidState, "rigid_state"_a,
+              "object_id"_a, "scene_id"_a = 0,
+              R"(Set the transformation of an object from a RigidState and update its simulation state.)")
+          .def(
+              "get_rigid_state", &Simulator::getRigidState, "object_id"_a,
+              "scene_id"_a = 0,
+              R"(Get an object's transformation as a RigidState (i.e. vector, quaternion).)")
+          .def("set_translation", &Simulator::setTranslation, "translation"_a,
+               "object_id"_a, "scene_id"_a = 0,
+               R"(Set an object's translation and update its simulation state.)")
+          .def("get_translation", &Simulator::getTranslation, "object_id"_a,
+               "scene_id"_a = 0, R"(Get an object's translation.)")
+          .def("set_rotation", &Simulator::setRotation, "rotation"_a, "object_id"_a,
+               "scene_id"_a = 0,
+               R"(Set an object's orientation and update its simulation state.)")
+          .def("get_rotation", &Simulator::getRotation, "object_id"_a,
+               "scene_id"_a = 0, R"(Get an object's orientation.)")
+          .def(
+              "get_object_velocity_control", &Simulator::getObjectVelocityControl,
+              "object_id"_a, "scene_id"_a = 0,
+              R"(Get a reference to an object's VelocityControl struct. Use this to set constant control velocities for MotionType::KINEMATIC and MotionType::DYNAMIC objects.)")
+          .def(
+              "set_linear_velocity", &Simulator::setLinearVelocity, "linVel"_a,
+              "object_id"_a, "scene_id"_a = 0,
+              R"(Set the linear component of an object's velocity. Only applies to MotionType::DYNAMIC objects.)")
+          .def(
+              "get_linear_velocity", &Simulator::getLinearVelocity, "object_id"_a,
+              "scene_id"_a = 0,
+              R"(Get the linear component of an object's velocity. Only non-zero for MotionType::DYNAMIC objects.)")
+          .def(
+              "set_angular_velocity", &Simulator::setAngularVelocity, "angVel"_a,
+              "object_id"_a, "scene_id"_a = 0,
+              R"(Set the angular component of an object's velocity. Only applies to MotionType::DYNAMIC objects.)")
+          .def(
+              "get_angular_velocity", &Simulator::getAngularVelocity, "object_id"_a,
+              "scene_id"_a = 0,
+              R"(Get the angular component of an object's velocity. Only non-zero for MotionType::DYNAMIC objects.)")
+          .def(
+              "apply_force", &Simulator::applyForce, "force"_a,
+              "relative_position"_a, "object_id"_a, "scene_id"_a = 0,
+              R"(Apply an external force to an object at a specific point relative to the object's center of mass in global coordinates. Only applies to MotionType::DYNAMIC objects.)")
+          .def(
+              "apply_torque", &Simulator::applyTorque, "torque"_a, "object_id"_a,
+              "scene_id"_a = 0,
+              R"(Apply torque to an object. Only applies to MotionType::DYNAMIC objects.)")
+          .def(
+              "contact_test", &Simulator::contactTest, "object_id"_a,
+              "scene_id"_a = 0,
+              R"(Run collision detection and return a binary indicator of penetration between the specified object and any other collision object. Physics must be enabled.)")
+          .def(
+              "get_physics_contact_points", &Simulator::getPhysicsContactPoints,
+              "scene_id"_a = 0,
+              R"(Return a list of ContactPointData objects describing the contacts from the most recent physics substep.)")
+          .def(
+              "cast_ray", &Simulator::castRay, "ray"_a, "max_distance"_a = 100.0,
+              "scene_id"_a = 0,
+              R"(Cast a ray into the collidable scene and return hit results. Physics must be enabled. max_distance in units of ray length.)")
+          .def("set_object_bb_draw", &Simulator::setObjectBBDraw, "draw_bb"_a,
+               "object_id"_a, "scene_id"_a = 0,
+               R"(Enable or disable bounding box visualization for an object.)")
+          .def(
+              "set_object_semantic_id", &Simulator::setObjectSemanticId,
+              "semantic_id"_a, "object_id"_a, "scene_id"_a = 0,
+              R"(Convenience function to set the semanticId for all visual SceneNodes belonging to an object.)")
+          .def(
+              "recompute_navmesh", &Simulator::recomputeNavMesh, "pathfinder"_a,
+              "navmesh_settings"_a, "include_static_objects"_a = false,
+              R"(Recompute the NavMesh for a given PathFinder instance using configured NavMeshSettings. Optionally include all MotionType::STATIC objects in the navigability constraints.)")
+          .def("get_light_setup", &Simulator::getLightSetup,
+               "key"_a = assets::ResourceManager::DEFAULT_LIGHTING_KEY,
+               R"(Get a copy of the LightSetup registered with a specific key.)")
+          .def(
+              "set_light_setup", &Simulator::setLightSetup, "light_setup"_a,
+              "key"_a = assets::ResourceManager::DEFAULT_LIGHTING_KEY,
+              R"(Register a LightSetup with a specific key. If a LightSetup is already registered with this key, it will be overriden. All Drawables referencing the key will use the newly registered LightSetup.)")
+          .def(
+              "set_object_light_setup", &Simulator::setObjectLightSetup,
+              "object_id"_a, "light_setup_key"_a, "scene_id"_a = 0,
+              R"(Modify the LightSetup used to the render all components of an object by setting the LightSetup key referenced by all Drawables attached to the object's visual SceneNodes.)")
 
           /* --- URDF and ArticualtedObject API functions --- */
           .def("add_articulated_object_from_urdf",

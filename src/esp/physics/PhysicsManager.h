@@ -1022,6 +1022,9 @@ class PhysicsManager {
     return false;
   };
 
+  virtual void overrideCollisionGroup(const int physObjectID,
+                                      CollisionGroup group) const {}
+
   virtual std::vector<ContactPointData> getContactPoints() const { return {}; }
 
   /** @brief Return the library implementation type for the simulator currently
