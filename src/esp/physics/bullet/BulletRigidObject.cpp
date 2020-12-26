@@ -264,6 +264,7 @@ bool BulletRigidObject::setMotionType(MotionType mt) {
   }
   else if (mt == MotionType::RENDER_ONLY) {
     // don't add any collidable back to the world.
+    bWorld_->removeRigidBody(bObjectRigidBody_.get());
     return true;
   }
 
@@ -329,6 +330,9 @@ std::string BulletRigidObject::getCollisionDebugName() {
 }
 
 void BulletRigidObject::constructAndAddRigidBody(MotionType mt) {
+  if (mt == MotionType::RENDER_ONLY) {
+    return;
+  }
   // get this object's creation template, appropriately cast
   auto tmpAttr = getInitializationAttributes();
 
