@@ -31,6 +31,8 @@ enum class CollisionGroup {
   FreeObject = 8,
   GraspedObject = 16,
   Robot = 32,
+  EeMargin = 64,
+  SelObj = 128,
 };
 
 class CollisionGroupHelper {

@@ -48,6 +48,14 @@ int CollisionGroupHelper::getMaskForGroup(CollisionGroup group) {
       // everything but grasped object
       return int(-1) & ~int(CollisionGroup::GraspedObject);
 
+    case CollisionGroup::EeMargin:
+      // everything but grasped object or the robot
+      return int(-1) & ~(int(CollisionGroup::GraspedObject) | int(CollisionGroup::Robot));
+
+    case CollisionGroup::SelObj:
+      // everything but the ee margin
+      return int(-1) & ~(int(CollisionGroup::EeMargin));
+
     default:
       ASSERT(false);
       return 0;
